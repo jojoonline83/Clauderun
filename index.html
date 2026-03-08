@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🦕 DinoWorld – Explore Amazing Dinosaurs!</title>
+  <style>
+    /* ── Reset & Base ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:   #2ecc71;
+      --dark-green: #1a6b3a;
+      --blue:    #3498db;
+      --sky:     #87CEEB;
+      --orange:  #e67e22;
+      --red:     #e74c3c;
+      --purple:  #9b59b6;
+      --yellow:  #f1c40f;
+      --cream:   #fef9ec;
+      --text:    #2c3e50;
+      --card-r:  16px;
+      --shadow:  0 8px 32px rgba(0,0,0,.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(160deg, #0d4f2e 0%, #1a7a45 40%, #2ecc71 100%);
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    /* ── Sky / Clouds ──────────────────────────────────────────── */
+    .sky {
+      position: relative;
+      background: linear-gradient(180deg, #4ec9f5 0%, #87CEEB 60%, #b5e8a0 100%);
+      overflow: hidden;
+      padding-bottom: 60px;
+    }
+
+    .cloud {
+      position: absolute;
+      background: white;
+      border-radius: 50px;
+      opacity: .85;
+      animation: driftCloud linear infinite;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    .cloud-1 { width:120px; height:40px; top:18%; animation-duration:28s; left:-150px; }
+    .cloud-1::before { width:60px; height:60px; top:-30px; left:20px; }
+    .cloud-1::after  { width:40px; height:40px; top:-18px; left:55px; }
+    .cloud-2 { width:180px; height:55px; top:8%;  animation-duration:36s; left:-220px; animation-delay:-14s; }
+    .cloud-2::before { width:80px; height:80px; top:-40px; left:30px; }
+    .cloud-2::after  { width:55px; height:55px; top:-25px; left:80px; }
+    .cloud-3 { width:90px;  height:30px; top:30%; animation-duration:22s; left:-120px; animation-delay:-8s; }
+    .cloud-3::before { width:45px; height:45px; top:-22px; left:15px; }
+    .cloud-3::after  { width:32px; height:32px; top:-14px; left:42px; }
+
+    @keyframes driftCloud {
+      from { transform: translateX(0); }
+      to   { transform: translateX(calc(100vw + 300px)); }
+    }
+
+    /* ── Header ────────────────────────────────────────────────── */
+    header {
+      position: relative;
+      text-align: center;
+      padding: 48px 16px 20px;
+      z-index: 2;
+    }
+
+    .header-dinos {
+      font-size: clamp(3rem, 10vw, 6rem);
+      line-height: 1;
+      animation: bounce 2.2s ease-in-out infinite;
+      display: inline-block;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,.2));
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50%       { transform: translateY(-14px) rotate(3deg); }
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 3px 3px 0 #1a4a2a, 6px 6px 12px rgba(0,0,0,.4);
+      letter-spacing: -1px;
+      margin-top: 8px;
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 3vw, 1.35rem);
+      color: #e8f8e8;
+      margin-top: 8px;
+      text-shadow: 1px 1px 4px rgba(0,0,0,.3);
+      font-weight: 600;
+    }
+
+    /* ── Volcano decoration ────────────────────────────────────── */
+    .volcano {
+      position: absolute;
+      bottom: 0;
+      font-size: 5rem;
+      opacity: .6;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,.2));
+    }
+    .volcano-l { left: 5%; }
+    .volcano-r { right: 5%; transform: scaleX(-1); }
+
+    /* ── Fun Facts Ticker ──────────────────────────────────────── */
+    .ticker-wrap {
+      background: var(--yellow);
+      overflow: hidden;
+      padding: 10px 0;
+      border-top: 3px solid #d4a00a;
+      border-bottom: 3px solid #d4a00a;
+    }
+    .ticker {
+      display: flex;
+      width: max-content;
+      animation: scrollTicker 55s linear infinite;
+      gap: 80px;
+    }
+    .ticker-item {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #6b4c00;
+      white-space: nowrap;
+    }
+    @keyframes scrollTicker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── Main content ──────────────────────────────────────────── */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 16px 64px;
+    }
+
+    /* ── Filter bar ────────────────────────────────────────────── */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 36px;
+    }
+
+    .filter-btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s, opacity .15s;
+      box-shadow: 0 4px 12px rgba(0,0,0,.2);
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,.3);
+    }
+    .filter-btn:hover   { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+    .filter-btn.active  { outline: 4px solid #fff; transform: scale(1.07); }
+    .filter-btn.all     { background: linear-gradient(135deg, #8e44ad, #3498db); }
+    .filter-btn.carnivore { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+    .filter-btn.herbivore { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+    .filter-btn.omnivore  { background: linear-gradient(135deg, #e67e22, #f39c12); }
+    .filter-btn.flying    { background: linear-gradient(135deg, #2980b9, #1abc9c); }
+
+    /* ── Dino Grid ─────────────────────────────────────────────── */
+    .dino-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 28px;
+    }
+
+    /* ── Dino Card ─────────────────────────────────────────────── */
+    .card {
+      perspective: 900px;
+      height: 420px;
+      cursor: pointer;
+    }
+    .card-inner {
+      position: relative;
+      width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transition: transform .55s cubic-bezier(.4,2,.55,.8);
+      border-radius: var(--card-r);
+    }
+    .card:hover .card-inner,
+    .card.flipped .card-inner { transform: rotateY(180deg); }
+
+    .card-front, .card-back {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--card-r);
+      backface-visibility: hidden;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    /* Front */
+    .card-front {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-banner {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7rem;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .dino-emoji {
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,.3));
+      animation: idleBob 3s ease-in-out infinite;
+      display: inline-block;
+      z-index: 1;
+    }
+    @keyframes idleBob {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-8px) scale(1.04); }
+    }
+
+    .banner-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: .18;
+      background-image: radial-gradient(circle, rgba(255,255,255,.9) 1px, transparent 1px);
+      background-size: 18px 18px;
+    }
+
+    .card-body {
+      background: #fff;
+      flex: 1;
+      padding: 14px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .dino-name {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.1;
+    }
+
+    .dino-period {
+      font-size: .82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      opacity: .6;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .badge {
+      padding: 3px 12px;
+      border-radius: 50px;
+      font-size: .78rem;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .badge.diet-carnivore { background: #e74c3c; }
+    .badge.diet-herbivore { background: #27ae60; }
+    .badge.diet-omnivore  { background: #e67e22; }
+    .badge.diet-piscivore { background: #2980b9; }
+    .badge.size           { background: #7f8c8d; }
+
+    .dino-teaser {
+      font-size: .88rem;
+      color: #555;
+      line-height: 1.45;
+      flex: 1;
+    }
+
+    .flip-hint {
+      font-size: .75rem;
+      color: #aaa;
+      text-align: right;
+      font-style: italic;
+      margin-top: 4px;
+    }
+
+    /* Back */
+    .card-back {
+      transform: rotateY(180deg);
+      background: var(--cream);
+      display: flex;
+      flex-direction: column;
+      padding: 22px 20px;
+      gap: 10px;
+    }
+
+    .back-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 3px dashed #ccc;
+      padding-bottom: 10px;
+    }
+    .back-emoji { font-size: 2.6rem; }
+    .back-name  { font-size: 1.3rem; font-weight: 900; color: var(--text); }
+    .back-latin { font-size: .8rem; color: #888; font-style: italic; }
+
+    .info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: .88rem;
+    }
+    .info-icon { font-size: 1.2rem; flex-shrink: 0; width: 24px; }
+    .info-label { font-weight: 700; color: #555; margin-right: 4px; }
+    .info-val   { color: var(--text); }
+
+    .fun-fact-box {
+      background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: auto;
+      border-left: 4px solid #e17055;
+    }
+    .fun-fact-box .ff-title { font-weight: 900; font-size: .85rem; color: #c0392b; }
+    .fun-fact-box .ff-text  { font-size: .83rem; color: #6b4c00; margin-top: 3px; line-height: 1.4; }
+
+    /* ── Section title ─────────────────────────────────────────── */
+    .section-title {
+      text-align: center;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 2px 2px 6px rgba(0,0,0,.35);
+      margin-bottom: 24px;
+    }
+
+    /* ── Dino-size chart ───────────────────────────────────────── */
+    .size-chart {
+      background: rgba(255,255,255,.92);
+      border-radius: 20px;
+      padding: 28px;
+      margin: 48px 0 32px;
+      box-shadow: var(--shadow);
+    }
+    .size-chart h2 {
+      text-align: center;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+      color: var(--dark-green);
+    }
+    .size-bars { display: flex; flex-direction: column; gap: 10px; }
+    .size-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .size-label { width: 160px; font-weight: 700; font-size: .9rem; flex-shrink: 0; }
+    .size-bar-bg { flex: 1; background: #e0e0e0; border-radius: 20px; height: 22px; overflow: hidden; }
+    .size-bar-fill {
+      height: 100%;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      font-size: .78rem;
+      font-weight: 700;
+      color: #fff;
+      transition: width 1s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── Footer ────────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      background: #0d2b18;
+      color: #6fcf97;
+      font-size: .9rem;
+    }
+    footer strong { color: #fff; }
+
+    /* ── No-results ────────────────────────────────────────────── */
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,.7);
+      font-size: 1.3rem;
+      font-weight: 700;
+      display: none;
+    }
+
+    /* ── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .card { height: 400px; }
+      .card-banner { height: 170px; font-size: 5.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ SKY / HEADER ═══════════════ -->
+<div class="sky">
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+
+  <header>
+    <div class="header-dinos">🦕&thinsp;🦖</div>
+    <h1>DinoWorld</h1>
+    <p class="subtitle">Explore the most amazing creatures that ever lived!</p>
+    <span class="volcano volcano-l">🌋</span>
+    <span class="volcano volcano-r">🌋</span>
+  </header>
+</div>
+
+<!-- ═══════════════ TICKER ═══════════════ -->
+<div class="ticker-wrap" aria-label="Fun dinosaur facts">
+  <div class="ticker" id="ticker">
+    <!-- items duplicated in JS for seamless loop -->
+  </div>
+</div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main>
+
+  <!-- Filter bar -->
+  <div class="filter-bar" role="group" aria-label="Filter by diet">
+    <button class="filter-btn all active"       data-filter="all">🌍 All Dinos</button>
+    <button class="filter-btn carnivore"  data-filter="carnivore">🥩 Carnivores</button>
+    <button class="filter-btn herbivore"  data-filter="herbivore">🌿 Herbivores</button>
+    <button class="filter-btn omnivore"   data-filter="omnivore" >🍄 Omnivores</button>
+    <button class="filter-btn flying"     data-filter="flying"   >🪶 Flyers</button>
+  </div>
+
+  <p class="section-title">Hover or tap a card to learn more! 👇</p>
+
+  <!-- Dino grid -->
+  <div class="dino-grid" id="dinoGrid"></div>
+  <p class="no-results" id="noResults">No dinosaurs match that filter! 🥺</p>
+
+  <!-- Size comparison chart -->
+  <div class="size-chart">
+    <h2>📏 How Big Were They?</h2>
+    <div class="size-bars" id="sizeChart"></div>
+  </div>
+
+</main>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <p>🦕 <strong>DinoWorld</strong> — A prehistoric adventure for curious minds of all ages! 🦖</p>
+  <p style="margin-top:6px;font-size:.8rem;">Dinosaurs roamed the Earth between 230 and 66 million years ago.</p>
+</footer>
+
+<!-- ═══════════════ DATA + LOGIC ═══════════════ -->
+<script>
+/* ─────────────────────────────────────────────────────────────────
+   DINOSAUR DATA
+───────────────────────────────────────────────────────────────── */
+const dinos = [
+  {
+    id: 'trex',
+    name: 'Tyrannosaurus Rex',
+    nickname: 'T-Rex',
+    latin: 'Tyrannosaurus rex',
+    emoji: '🦖',
+    period: 'Late Cretaceous · 68–66 Ma',
+    diet: 'carnivore',
+    size: '12 m long · 5.4 m tall',
+    lengthM: 12,
+    weight: '~9 tonnes',
+    found: 'North America',
+    behavior: 'Apex predator with bone-crushing jaws and keen senses of smell and vision.',
+    teaser: 'The king of dinosaurs — powerful jaws, tiny arms, and a thundering roar!',
+    funFact: 'T-Rex could bite with a force of 57,000 newtons — enough to crush a car!',
+    bannerColor: 'linear-gradient(135deg, #c0392b, #e74c3c)',
+    tag: 'carnivore',
+  },
+  {
+    id: 'triceratops',
+    name: 'Triceratops',
+    nickname: 'Triceratops',
+    latin: 'Triceratops horridus',
+    emoji: '🦏',
+    period: 'Late Cretaceous · 68–66 Ma',
+    diet: 'herbivore',
+    size: '9 m long · 3 m tall',
+    lengthM: 9,
+    weight: '~8 tonnes',
+    found: 'North America',
+    behavior: 'Peacefully grazed on low plants and used its three horns to defend against predators.',
+    teaser: 'Three fierce horns and a giant frill made this plant-eater a tough customer!',
+    funFact: "Triceratops had the largest skull of any land animal — up to 2.5 metres long!",
+    bannerColor: 'linear-gradient(135deg, #27ae60, #1abc9c)',
+    tag: 'herbivore',
+  },
+  {
+    id: 'brachiosaurus',
+    name: 'Brachiosaurus',
+    nickname: 'Brachio',
+    latin: 'Brachiosaurus altithorax',
+    emoji: '🦕',
+    period: 'Late Jurassic · 154–153 Ma',
+    diet: 'herbivore',
+    size: '26 m long · 13 m tall',
+    lengthM: 26,
+    weight: '~56 tonnes',
+    found: 'North America, Africa',
+    behavior: 'Gentle giant that used its extraordinary long neck to reach treetop leaves.',
+    teaser: 'So tall it could peek into a four-story window — a true gentle giant!',
+    funFact: 'Brachiosaurus had nostrils on top of its head, like a built-in snorkel!',
+    bannerColor: 'linear-gradient(135deg, #8e44ad, #9b59b6)',
+    tag: 'herbivore',
+  },
+  {
+    id: 'velociraptor',
+    name: 'Velociraptor',
+    nickname: 'Raptor',
+    latin: 'Velociraptor mongoliensis',
+    emoji: '🐉',
+    period: 'Late Cretaceous · 75–71 Ma',
+    diet: 'carnivore',
+    size: '2 m long · 0.5 m tall',
+    lengthM: 2,
+    weight: '~15 kg',
+    found: 'Mongolia, China',
+    behavior: 'Cunning pack hunter that used its sickle-shaped claw to pin and slash prey.',
+    teaser: 'A feathered, clever hunter — the size of a turkey but twice as dangerous!',
+    funFact: 'Velociraptors were likely covered in feathers and closely related to modern birds!',
+    bannerColor: 'linear-gradient(135deg, #e67e22, #d35400)',
+    tag: 'carnivore',
+  },
+  {
+    id: 'stegosaurus',
+    name: 'Stegosaurus',
+    nickname: 'Stego',
+    latin: 'Stegosaurus stenops',
+    emoji: '🦎',
+    period: 'Late Jurassic · 155–150 Ma',
+    diet: 'herbivore',
+    size: '9 m long · 4 m tall',
+    lengthM: 9,
+    weight: '~5 tonnes',
+    found: 'North America, Europe',
+    behavior: 'Slow-moving plant-eater with bony plates to regulate temperature and spiky tail for defence.',
+    teaser: 'Cool bony plates down its back and a spiky tail — nature\'s walking fortress!',
+    funFact: 'Stegosaurus had a brain the size of a walnut — tiny for such a large body!',
+    bannerColor: 'linear-gradient(135deg, #16a085, #1abc9c)',
+    tag: 'herbivore',
+  },
+  {
+    id: 'ankylosaurus',
+    name: 'Ankylosaurus',
+    nickname: 'Ankylo',
+    latin: 'Ankylosaurus magniventris',
+    emoji: '🐢',
+    period: 'Late Cretaceous · 68–66 Ma',
+    diet: 'herbivore',
+    size: '10 m long · 1.7 m tall',
+    lengthM: 10,
+    weight: '~6 tonnes',
+    found: 'North America',
+    behavior: 'Living tank — armoured from head to tail, with a massive club-tail to swing at attackers.',
+    teaser: 'The ultimate dino tank — armoured plates and a bone club that could break legs!',
+    funFact: 'Ankylosaurus\'s tail club was made of fused bone and could shatter the ankle of a T-Rex!',
+    bannerColor: 'linear-gradient(135deg, #7f8c8d, #95a5a6)',
+    tag: 'herbivore',
+  },
+  {
+    id: 'pteranodon',
+    name: 'Pteranodon',
+    nickname: 'Ptero',
+    latin: 'Pteranodon longiceps',
+    emoji: '🦅',
+    period: 'Late Cretaceous · 88–80 Ma',
+    diet: 'piscivore',
+    size: '6 m wingspan',
+    lengthM: 6,
+    weight: '~20 kg',
+    found: 'North America',
+    behavior: 'Soared on warm air currents and dived to snatch fish from shallow seas.',
+    teaser: 'Not a dinosaur but a flying reptile with a wingspan wider than a hang-glider!',
+    funFact: 'Pteranodon was surprisingly light — hollow bones kept it airborne over ancient seas!',
+    bannerColor: 'linear-gradient(135deg, #2980b9, #3498db)',
+    tag: 'flying',
+  },
+  {
+    id: 'spinosaurus',
+    name: 'Spinosaurus',
+    nickname: 'Spino',
+    latin: 'Spinosaurus aegyptiacus',
+    emoji: '🐊',
+    period: 'Cretaceous · 99–93 Ma',
+    diet: 'carnivore',
+    size: '15 m long · 5.7 m tall',
+    lengthM: 15,
+    weight: '~20 tonnes',
+    found: 'North Africa',
+    behavior: 'Semi-aquatic apex predator that patrolled rivers and estuaries hunting giant fish.',
+    teaser: 'Bigger than T-Rex and loved swimming — the largest predatory dinosaur ever found!',
+    funFact: 'Spinosaurus had dense bones like a hippo to help it stay submerged while hunting fish!',
+    bannerColor: 'linear-gradient(135deg, #c0392b, #8e44ad)',
+    tag: 'carnivore',
+  },
+  {
+    id: 'diplodocus',
+    name: 'Diplodocus',
+    nickname: 'Dippy',
+    latin: 'Diplodocus carnegii',
+    emoji: '🦕',
+    period: 'Late Jurassic · 154–152 Ma',
+    diet: 'herbivore',
+    size: '27 m long · 4 m tall',
+    lengthM: 27,
+    weight: '~16 tonnes',
+    found: 'North America',
+    behavior: 'Gentle browser that could crack its whip-like tail like a sonic boom to warn predators.',
+    teaser: 'One of the longest animals ever — its tail could crack louder than a thunderclap!',
+    funFact: 'Diplodocus replaced its teeth constantly, wearing through a new set every 35 days!',
+    bannerColor: 'linear-gradient(135deg, #f39c12, #e67e22)',
+    tag: 'herbivore',
+  },
+  {
+    id: 'parasaurolophus',
+    name: 'Parasaurolophus',
+    nickname: 'Para',
+    latin: 'Parasaurolophus walkeri',
+    emoji: '🦆',
+    period: 'Late Cretaceous · 76–74 Ma',
+    diet: 'herbivore',
+    size: '10 m long · 3 m tall',
+    lengthM: 10,
+    weight: '~2.5 tonnes',
+    found: 'North America',
+    behavior: 'Social herd animal that used its hollow crest to boom low-frequency calls across the forest.',
+    teaser: 'A living trombone! Its hollow crest made musical calls to talk to the herd.',
+    funFact: 'Scientists have recreated Parasaurolophus\'s calls — it sounded like a deep foghorn!',
+    bannerColor: 'linear-gradient(135deg, #e91e63, #f06292)',
+    tag: 'herbivore',
+  },
+  {
+    id: 'pachycephalosaurus',
+    name: 'Pachycephalosaurus',
+    nickname: 'Pachy',
+    latin: 'Pachycephalosaurus wyomingensis',
+    emoji: '🐏',
+    period: 'Late Cretaceous · 70–66 Ma',
+    diet: 'omnivore',
+    size: '4.5 m long · 1.5 m tall',
+    lengthM: 4.5,
+    weight: '~450 kg',
+    found: 'North America',
+    behavior: 'Used its 25 cm thick dome skull to head-butt rivals during competitions for dominance.',
+    teaser: 'The ultimate head-banger — a skull helmet 25 cm thick for epic dinosaur battles!',
+    funFact: 'Pachycephalosaurus means "thick-headed lizard" — perfectly named for a head-butter!',
+    bannerColor: 'linear-gradient(135deg, #f1c40f, #e67e22)',
+    tag: 'omnivore',
+  },
+  {
+    id: 'allosaurus',
+    name: 'Allosaurus',
+    nickname: 'Allo',
+    latin: 'Allosaurus fragilis',
+    emoji: '🦖',
+    period: 'Late Jurassic · 155–145 Ma',
+    diet: 'carnivore',
+    size: '12 m long · 4.5 m tall',
+    lengthM: 12,
+    weight: '~2.3 tonnes',
+    found: 'North America, Europe',
+    behavior: 'Powerful pack hunter of the Jurassic that preyed on huge sauropods.',
+    teaser: 'The T-Rex of the Jurassic — a razor-toothed killer that hunted in fearsome packs!',
+    funFact: 'Allosaurus had blade-like teeth that broke off easily — but it grew new ones constantly!',
+    bannerColor: 'linear-gradient(135deg, #6c3483, #a569bd)',
+    tag: 'carnivore',
+  },
+  {
+    id: 'iguanodon',
+    name: 'Iguanodon',
+    nickname: 'Iggy',
+    latin: 'Iguanodon bernissartensis',
+    emoji: '🦎',
+    period: 'Early Cretaceous · 126–122 Ma',
+    diet: 'herbivore',
+    size: '10 m long · 3 m tall',
+    lengthM: 10,
+    weight: '~3.5 tonnes',
+    found: 'Europe, North America',
+    behavior: 'Flexible browser that walked on two or four legs and used spike thumbs for defence.',
+    teaser: 'One of the first dinosaurs ever discovered — with handy thumb spikes for protection!',
+    funFact: 'Iguanodon\'s thumb spike was once mistaken for a nose horn by early scientists!',
+    bannerColor: 'linear-gradient(135deg, #1d8348, #27ae60)',
+    tag: 'herbivore',
+  },
+  {
+    id: 'quetzalcoatlus',
+    name: 'Quetzalcoatlus',
+    nickname: 'Quetz',
+    latin: 'Quetzalcoatlus northropi',
+    emoji: '🦤',
+    period: 'Late Cretaceous · 68–66 Ma',
+    diet: 'carnivore',
+    size: '10–11 m wingspan · 3 m tall (standing)',
+    lengthM: 10.5,
+    weight: '~250 kg',
+    found: 'North America',
+    behavior: 'Largest known flying animal ever — stalked the land like a giant heron between flights.',
+    teaser: 'A flying reptile as tall as a giraffe when standing — the ultimate prehistoric flyer!',
+    funFact: 'Quetzalcoatlus could probably fly non-stop for 7–10 days at 130 km/h!',
+    bannerColor: 'linear-gradient(135deg, #117a8b, #20c9de)',
+    tag: 'flying',
+  },
+  {
+    id: 'therizinosaurus',
+    name: 'Therizinosaurus',
+    nickname: 'Theri',
+    latin: 'Therizinosaurus cheloniformis',
+    emoji: '🦅',
+    period: 'Late Cretaceous · 70 Ma',
+    diet: 'herbivore',
+    size: '10 m long · 5 m tall',
+    lengthM: 10,
+    weight: '~5 tonnes',
+    found: 'Mongolia',
+    behavior: 'Gentle giant with the longest claws of any animal ever, used to pull down branches.',
+    teaser: 'Terrifying metre-long claws — but only used for picking leaves! The ultimate plant-eater.',
+    funFact: 'Therizinosaurus had the longest claws ever recorded — each claw was nearly 1 metre long!',
+    bannerColor: 'linear-gradient(135deg, #d35400, #e67e22)',
+    tag: 'herbivore',
+  },
+  {
+    id: 'oviraptor',
+    name: 'Oviraptor',
+    nickname: 'Ovi',
+    latin: 'Oviraptor philoceratops',
+    emoji: '🐓',
+    period: 'Late Cretaceous · 75–71 Ma',
+    diet: 'omnivore',
+    size: '2 m long · 1 m tall',
+    lengthM: 2,
+    weight: '~35 kg',
+    found: 'Mongolia',
+    behavior: 'Devoted parent that sat on its nest of eggs like a modern bird — feathered and fast.',
+    teaser: 'Wrongly named "egg thief" — actually one of the best dinosaur parents ever known!',
+    funFact: "Oviraptor fossils were found sitting on their own eggs, not stealing them — a dino dad!",
+    bannerColor: 'linear-gradient(135deg, #c0392b, #f1948a)',
+    tag: 'omnivore',
+  },
+];
+
+/* ─────────────────────────────────────────────────────────────────
+   TICKER
+───────────────────────────────────────────────────────────────── */
+const tickerFacts = [
+  '🦕 Dinosaurs ruled Earth for over 165 million years!',
+  '🦖 Birds are living dinosaurs — descendants of theropods!',
+  '🌋 The mass extinction 66 million years ago was caused by an asteroid impact!',
+  '🦴 The word "dinosaur" means "terrible lizard" in Greek!',
+  '🥚 Some dinosaurs were warm-blooded, like modern birds!',
+  '🌿 Most dinosaurs were actually herbivores, not scary meat-eaters!',
+  '🦷 T-Rex had 60 banana-sized teeth that it replaced throughout its life!',
+  '🔍 Palaeontologists discover about 50 new dinosaur species every year!',
+  '🐣 Some dinosaurs sat on their nests and cared for their young!',
+  '🌍 Dinosaur fossils have been found on every continent, including Antarctica!',
+];
+
+function buildTicker() {
+  const ticker = document.getElementById('ticker');
+  // Double for seamless loop
+  const doubled = [...tickerFacts, ...tickerFacts];
+  ticker.innerHTML = doubled.map(f => `<span class="ticker-item">⭐ ${f}</span>`).join('');
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   CARD BUILDER
+───────────────────────────────────────────────────────────────── */
+function dietBadge(d) {
+  const labels = { carnivore:'🥩 Carnivore', herbivore:'🌿 Herbivore', omnivore:'🍄 Omnivore', piscivore:'🐟 Piscivore' };
+  return `<span class="badge diet-${d}">${labels[d] || d}</span>`;
+}
+
+function buildCard(d) {
+  return `
+  <div class="card" data-tag="${d.tag}" role="button" aria-label="Flip card for ${d.name} details" tabindex="0">
+    <div class="card-inner">
+
+      <!-- FRONT -->
+      <div class="card-front">
+        <div class="card-banner" style="background:${d.bannerColor}">
+          <div class="banner-pattern"></div>
+          <span class="dino-emoji" role="img" aria-label="${d.nickname}">${d.emoji}</span>
+        </div>
+        <div class="card-body">
+          <div class="dino-name">${d.nickname !== d.name.split(' ')[0] ? d.nickname + ' – ' : ''}${d.name}</div>
+          <div class="dino-period">⏳ ${d.period}</div>
+          <div class="badge-row">
+            ${dietBadge(d.diet)}
+            <span class="badge size">📏 ${d.size}</span>
+          </div>
+          <p class="dino-teaser">${d.teaser}</p>
+          <p class="flip-hint">Hover / tap to flip ↩</p>
+        </div>
+      </div>
+
+      <!-- BACK -->
+      <div class="card-back">
+        <div class="back-header">
+          <span class="back-emoji">${d.emoji}</span>
+          <div>
+            <div class="back-name">${d.name}</div>
+            <div class="back-latin">${d.latin}</div>
+          </div>
+        </div>
+        <div class="info-row"><span class="info-icon">🌍</span><span><span class="info-label">Found in:</span><span class="info-val">${d.found}</span></span></div>
+        <div class="info-row"><span class="info-icon">⚖️</span><span><span class="info-label">Weight:</span><span class="info-val">${d.weight}</span></span></div>
+        <div class="info-row"><span class="info-icon">🍽️</span><span><span class="info-label">Diet:</span><span class="info-val">${d.diet.charAt(0).toUpperCase() + d.diet.slice(1)}</span></span></div>
+        <div class="info-row"><span class="info-icon">🧠</span><span><span class="info-label">Behaviour:</span><span class="info-val">${d.behavior}</span></span></div>
+        <div class="fun-fact-box">
+          <div class="ff-title">🌟 Fun Fact!</div>
+          <div class="ff-text">${d.funFact}</div>
+        </div>
+      </div>
+
+    </div>
+  </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SIZE CHART
+───────────────────────────────────────────────────────────────── */
+const CHART_COLORS = [
+  '#e74c3c','#e67e22','#f1c40f','#2ecc71','#1abc9c',
+  '#3498db','#9b59b6','#e91e63','#ff5722','#607d8b',
+  '#00bcd4','#8bc34a','#ff9800','#795548','#78909c','#f06292'
+];
+
+function buildSizeChart() {
+  const sorted = [...dinos].sort((a, b) => b.lengthM - a.lengthM);
+  const max = sorted[0].lengthM;
+  const container = document.getElementById('sizeChart');
+  container.innerHTML = sorted.map((d, i) => `
+    <div class="size-row">
+      <div class="size-label">${d.emoji} ${d.nickname || d.name.split(' ')[0]}</div>
+      <div class="size-bar-bg">
+        <div class="size-bar-fill" style="width:${(d.lengthM/max*100).toFixed(1)}%;background:${CHART_COLORS[i % CHART_COLORS.length]}">
+          ${d.lengthM}m
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   FILTER LOGIC
+───────────────────────────────────────────────────────────────── */
+function renderDinos(filter) {
+  const grid = document.getElementById('dinoGrid');
+  const noRes = document.getElementById('noResults');
+  const filtered = filter === 'all' ? dinos : dinos.filter(d => d.tag === filter);
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    noRes.style.display = 'block';
+  } else {
+    noRes.style.display = 'none';
+    grid.innerHTML = filtered.map(buildCard).join('');
+    attachCardListeners();
+  }
+}
+
+function attachCardListeners() {
+  document.querySelectorAll('.card').forEach(card => {
+    // Touch / click support for flip
+    card.addEventListener('click', () => card.classList.toggle('flipped'));
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.classList.toggle('flipped');
+      }
+    });
+  });
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderDinos(btn.dataset.filter);
+  });
+});
+
+/* ─────────────────────────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────────────────────────── */
+buildTicker();
+renderDinos('all');
+buildSizeChart();
+</script>
+</body>
+</html>
