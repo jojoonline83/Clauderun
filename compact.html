@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>🦕 DinoWorld</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;background:linear-gradient(160deg,#0d4f2e,#2ecc71);min-height:100vh}.hero{background:linear-gradient(180deg,#4ec9f5,#b5e8a0);text-align:center;padding:30px 16px 40px;position:relative}.hero h1{font-size:2.5rem;font-weight:900;color:#fff;text-shadow:3px 3px 0 #1a4a2a}.hero p{color:#e8f8e8;font-size:1.1rem;margin-top:8px;font-weight:600}.bounce{display:inline-block;animation:b 2s ease-in-out infinite;font-size:3rem}@keyframes b{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}.ticker{background:#f1c40f;padding:10px;overflow:hidden;border-top:3px solid #d4a00a;border-bottom:3px solid #d4a00a}.ticker-inner{display:flex;width:max-content;animation:t 40s linear infinite;gap:60px}@keyframes t{from{transform:translateX(0)}to{transform:translateX(-50%)}}.ticker span{white-space:nowrap;font-weight:700;color:#6b4c00}main{max-width:1200px;margin:0 auto;padding:24px 16px 48px}.filters{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:24px}.btn{padding:8px 20px;border:none;border-radius:50px;font-size:.9rem;font-weight:700;cursor:pointer;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.2);transition:transform .15s}.btn:hover,.btn.active{transform:scale(1.08);outline:3px solid #fff}.btn.all{background:linear-gradient(135deg,#8e44ad,#3498db)}.btn.meat{background:linear-gradient(135deg,#e74c3c,#c0392b)}.btn.plant{background:linear-gradient(135deg,#27ae60,#2ecc71)}.btn.omni{background:linear-gradient(135deg,#e67e22,#f39c12)}.btn.fly{background:linear-gradient(135deg,#2980b9,#1abc9c)}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.15);transition:transform .2s}.card:hover{transform:translateY(-6px)}.card-top{height:160px;display:flex;align-items:center;justify-content:center;font-size:5rem;position:relative}.card-top::before{content:'';position:absolute;inset:0;opacity:.15;background:radial-gradient(circle,#fff 1px,transparent 1px);background-size:16px 16px}.card-body{padding:14px 16px 18px}.dino-name{font-size:1.2rem;font-weight:900;color:#2c3e50}.period{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#888;margin-top:2px}.badges{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.badge{padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:700;color:#fff}.c{background:#e74c3c}.h{background:#27ae60}.o{background:#e67e22}.p{background:#2980b9}.s{background:#7f8c8d}.desc{font-size:.85rem;color:#555;line-height:1.45;margin-bottom:8px}.fact{background:linear-gradient(135deg,#ffeaa7,#fdcb6e);border-radius:8px;padding:8px 12px;border-left:4px solid #e17055;font-size:.8rem;color:#6b4c00;line-height:1.4}.fact b{color:#c0392b;display:block;margin-bottom:2px}</style></head><body>
+<div class="hero"><span class="bounce">🦕 🦖</span><h1>DinoWorld</h1><p>Explore the most amazing creatures that ever lived!</p></div>
+<div class="ticker"><div class="ticker-inner" id="tk"></div></div>
+<main>
+<div class="filters">
+<button class="btn all active" onclick="filter('all')">🌍 All</button>
+<button class="btn meat" onclick="filter('c')">🥩 Carnivores</button>
+<button class="btn plant" onclick="filter('h')">🌿 Herbivores</button>
+<button class="btn omni" onclick="filter('o')">🍄 Omnivores</button>
+<button class="btn fly" onclick="filter('f')">🪶 Flyers</button>
+</div>
+<div class="grid" id="grid"></div>
+</main>
+<script>
+const D=[
+{n:"T-Rex",e:"🦖",t:"Tyrannosaurus rex",p:"Late Cretaceous · 68–66 Ma",d:"c",dl:"🥩 Carnivore",sz:"12m long",w:"9 tonnes",fn:"North America",bv:"Apex predator with bone-crushing jaws and amazing sense of smell.",f:"T-Rex could bite with 57,000 newtons of force — enough to crush a car!",bg:"linear-gradient(135deg,#c0392b,#e74c3c)",tg:"c"},
+{n:"Triceratops",e:"🦏",t:"Triceratops horridus",p:"Late Cretaceous · 68–66 Ma",d:"h",dl:"🌿 Herbivore",sz:"9m long",w:"8 tonnes",fn:"North America",bv:"Grazed on low plants and used its three horns to defend against predators.",f:"Triceratops had the largest skull of any land animal — up to 2.5m long!",bg:"linear-gradient(135deg,#27ae60,#1abc9c)",tg:"h"},
+{n:"Brachiosaurus",e:"🦕",t:"Brachiosaurus altithorax",p:"Late Jurassic · 154–153 Ma",d:"h",dl:"🌿 Herbivore",sz:"26m long",w:"56 tonnes",fn:"North America, Africa",bv:"Gentle giant that used its extremely long neck to reach treetop leaves.",f:"Brachiosaurus had nostrils on top of its head, like a built-in snorkel!",bg:"linear-gradient(135deg,#8e44ad,#9b59b6)",tg:"h"},
+{n:"Velociraptor",e:"🐉",t:"Velociraptor mongoliensis",p:"Late Cretaceous · 75–71 Ma",d:"c",dl:"🥩 Carnivore",sz:"2m long",w:"15 kg",fn:"Mongolia, China",bv:"Cunning pack hunter that used its sickle-shaped claw to slash prey.",f:"Velociraptors were actually the size of a turkey and covered in feathers!",bg:"linear-gradient(135deg,#e67e22,#d35400)",tg:"c"},
+{n:"Stegosaurus",e:"🦎",t:"Stegosaurus stenops",p:"Late Jurassic · 155–150 Ma",d:"h",dl:"🌿 Herbivore",sz:"9m long",w:"5 tonnes",fn:"North America, Europe",bv:"Slow-moving plant-eater. Bony plates helped regulate temperature.",f:"Stegosaurus had a brain the size of a walnut — tiny for such a huge body!",bg:"linear-gradient(135deg,#16a085,#1abc9c)",tg:"h"},
+{n:"Ankylosaurus",e:"🐢",t:"Ankylosaurus magniventris",p:"Late Cretaceous · 68–66 Ma",d:"h",dl:"🌿 Herbivore",sz:"10m long",w:"6 tonnes",fn:"North America",bv:"Living tank — armoured from head to tail with a massive bone club tail.",f:"Ankylosaurus's tail club could shatter the ankle bones of a T-Rex!",bg:"linear-gradient(135deg,#7f8c8d,#95a5a6)",tg:"h"},
+{n:"Pteranodon",e:"🦅",t:"Pteranodon longiceps",p:"Late Cretaceous · 88–80 Ma",d:"p",dl:"🐟 Fish-eater",sz:"6m wingspan",w:"20 kg",fn:"North America",bv:"Soared on warm air currents and dived to snatch fish from shallow seas.",f:"Pteranodon was surprisingly light — hollow bones kept it airborne!",bg:"linear-gradient(135deg,#2980b9,#3498db)",tg:"f"},
+{n:"Spinosaurus",e:"🐊",t:"Spinosaurus aegyptiacus",p:"Cretaceous · 99–93 Ma",d:"c",dl:"🥩 Carnivore",sz:"15m long",w:"20 tonnes",fn:"North Africa",bv:"Semi-aquatic apex predator that hunted giant fish in rivers and estuaries.",f:"Spinosaurus was bigger than T-Rex — the largest predatory dino ever found!",bg:"linear-gradient(135deg,#c0392b,#8e44ad)",tg:"c"},
+{n:"Diplodocus",e:"🦕",t:"Diplodocus carnegii",p:"Late Jurassic · 154–152 Ma",d:"h",dl:"🌿 Herbivore",sz:"27m long",w:"16 tonnes",fn:"North America",bv:"Could crack its whip-like tail like a sonic boom to warn predators.",f:"Diplodocus replaced its teeth every 35 days — constant regrowth!",bg:"linear-gradient(135deg,#f39c12,#e67e22)",tg:"h"},
+{n:"Parasaurolophus",e:"🦆",t:"Parasaurolophus walkeri",p:"Late Cretaceous · 76–74 Ma",d:"h",dl:"🌿 Herbivore",sz:"10m long",w:"2.5 tonnes",fn:"North America",bv:"Social herd animal that boomed low-frequency calls through its hollow crest.",f:"Scientists recreated its call — it sounded like a deep foghorn!",bg:"linear-gradient(135deg,#e91e63,#f06292)",tg:"h"},
+{n:"Pachycephalosaurus",e:"🐏",t:"Pachycephalosaurus wyomingensis",p:"Late Cretaceous · 70–66 Ma",d:"o",dl:"🍄 Omnivore",sz:"4.5m long",w:"450 kg",fn:"North America",bv:"Used its 25cm thick dome skull to head-butt rivals for dominance.",f:"Its name means 'thick-headed lizard' — perfectly named for a head-butter!",bg:"linear-gradient(135deg,#f1c40f,#e67e22)",tg:"o"},
+{n:"Quetzalcoatlus",e:"🦤",t:"Quetzalcoatlus northropi",p:"Late Cretaceous · 68–66 Ma",d:"c",dl:"🥩 Carnivore",sz:"11m wingspan",w:"250 kg",fn:"North America",bv:"Largest known flying animal — stalked land like a giant heron between flights.",f:"Quetzalcoatlus could fly non-stop for 7–10 days at 130 km/h!",bg:"linear-gradient(135deg,#117a8b,#20c9de)",tg:"f"},
+{n:"Allosaurus",e:"🦖",t:"Allosaurus fragilis",p:"Late Jurassic · 155–145 Ma",d:"c",dl:"🥩 Carnivore",sz:"12m long",w:"2.3 tonnes",fn:"North America, Europe",bv:"Powerful pack hunter that preyed on huge sauropods of the Jurassic.",f:"Allosaurus had blade-like teeth that broke off easily — but regrew constantly!",bg:"linear-gradient(135deg,#6c3483,#a569bd)",tg:"c"},
+{n:"Oviraptor",e:"🐓",t:"Oviraptor philoceratops",p:"Late Cretaceous · 75–71 Ma",d:"o",dl:"🍄 Omnivore",sz:"2m long",w:"35 kg",fn:"Mongolia",bv:"Devoted parent that sat on its nest of eggs just like a modern bird.",f:"Named 'egg thief' — but it was actually sitting on its OWN eggs!",bg:"linear-gradient(135deg,#c0392b,#f1948a)",tg:"o"},
+{n:"Iguanodon",e:"🦎",t:"Iguanodon bernissartensis",p:"Early Cretaceous · 126–122 Ma",d:"h",dl:"🌿 Herbivore",sz:"10m long",w:"3.5 tonnes",fn:"Europe, North America",bv:"Could walk on two or four legs; used spike thumbs to defend itself.",f:"Its thumb spike was once mistaken for a nose horn by early scientists!",bg:"linear-gradient(135deg,#1d8348,#27ae60)",tg:"h"},
+{n:"Therizinosaurus",e:"🦅",t:"Therizinosaurus cheloniformis",p:"Late Cretaceous · 70 Ma",d:"h",dl:"🌿 Herbivore",sz:"10m long",w:"5 tonnes",fn:"Mongolia",bv:"Gentle giant with the longest claws ever, used to pull down branches.",f:"Therizinosaurus had the longest claws ever — nearly 1 METRE each!",bg:"linear-gradient(135deg,#d35400,#e67e22)",tg:"h"}
+];
+
+const facts=[
+"🦕 Dinosaurs ruled Earth for over 165 million years!",
+"🦖 Birds are living dinosaurs — descendants of theropods!",
+"🌋 The mass extinction 66 million years ago was caused by an asteroid!",
+"🦴 'Dinosaur' means 'terrible lizard' in Greek!",
+"🥚 Some dinosaurs were warm-blooded, like modern birds!",
+"🌿 Most dinosaurs were actually herbivores, not scary meat-eaters!",
+"🦷 T-Rex had 60 banana-sized teeth it replaced throughout its life!",
+"🔍 Scientists discover ~50 new dinosaur species every year!",
+];
+
+let cur='all';
+function filter(tag){
+  cur=tag;
+  document.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+function render(){
+  const list=cur==='all'?D:D.filter(d=>d.tg===cur);
+  document.getElementById('grid').innerHTML=list.map(d=>`
+<div class="card">
+  <div class="card-top" style="background:${d.bg}">${d.e}</div>
+  <div class="card-body">
+    <div class="dino-name">${d.n}</div>
+    <div class="period">⏳ ${d.p}</div>
+    <div class="badges">
+      <span class="badge ${d.d}">${d.dl}</span>
+      <span class="badge s">📏 ${d.sz} · ⚖️ ${d.w}</span>
+    </div>
+    <p class="desc">${d.bv}</p>
+    <div class="fact"><b>🌟 Fun Fact!</b>${d.f}</div>
+  </div>
+</div>`).join('');
+}
+
+const tk=document.getElementById('tk');
+const double=[...facts,...facts];
+tk.innerHTML=double.map(f=>`<span>⭐ ${f}</span>`).join('');
+render();
+</script></body></html>
