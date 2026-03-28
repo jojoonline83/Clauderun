@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { GameProvider } from './context/GameContext';
 import BottomNav from './components/BottomNav';
 import XPNotification from './components/XPNotification';
@@ -11,7 +11,7 @@ import Profile from './pages/Profile';
 export default function App() {
   return (
     <GameProvider>
-      <BrowserRouter>
+      <HashRouter>
         <div className="relative">
           <XPNotification />
           <Routes>
@@ -23,7 +23,7 @@ export default function App() {
           </Routes>
           <BottomNav />
         </div>
-      </BrowserRouter>
+      </HashRouter>
     </GameProvider>
   );
 }
