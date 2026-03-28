@@ -14,7 +14,7 @@ export default function App() {
     <ErrorBoundary>
     <GameProvider>
       <HashRouter>
-        <div className="relative">
+        <div className="relative landscape:pl-16">
           <XPNotification />
           <Routes>
             <Route path="/" element={<Home />} />

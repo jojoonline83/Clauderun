@@ -12,6 +12,7 @@
   html {
     font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
     -webkit-text-size-adjust: 100%;
+    font-size: 18px;
   }
 
   body {
@@ -54,5 +55,36 @@
   }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* Landscape layout: side nav + wider content */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* Root container fills full width in landscape */
+  #root {
+    max-width: 100% !important;
+    display: flex;
+    flex-direction: row;
+  }
+
+  /* Side nav in landscape */
+  .bottom-nav-landscape {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 72px;
+    flex-direction: column;
+    justify-content: center;
+    border-top: none;
+    border-right: 2px solid #ffedd5;
+    padding: 8px 4px;
+    transform: none;
+  }
+
+  /* Main content shifts right to clear side nav */
+  .landscape-content {
+    margin-left: 72px;
+    width: calc(100% - 72px);
   }
 }
