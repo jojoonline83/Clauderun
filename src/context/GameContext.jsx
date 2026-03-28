@@ -52,7 +52,7 @@ export function GameProvider({ children }) {
   }, [stats]);
 
   const getCurrentLevel = () => {
-    return LEVELS.findLast(l => stats.totalXP >= l.minXP) || LEVELS[0];
+    return [...LEVELS].reverse().find(l => stats.totalXP >= l.minXP) || LEVELS[0];
   };
 
   const getNextLevel = () => {

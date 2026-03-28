@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { GameProvider } from './context/GameContext';
 import BottomNav from './components/BottomNav';
 import XPNotification from './components/XPNotification';
+import ErrorBoundary from './components/ErrorBoundary';
 import Home from './pages/Home';
 import Oral from './pages/Oral';
 import Composition from './pages/Composition';
@@ -10,6 +11,7 @@ import Profile from './pages/Profile';
 
 export default function App() {
   return (
+    <ErrorBoundary>
     <GameProvider>
       <HashRouter>
         <div className="relative">
@@ -25,5 +27,6 @@ export default function App() {
         </div>
       </HashRouter>
     </GameProvider>
+    </ErrorBoundary>
   );
 }
